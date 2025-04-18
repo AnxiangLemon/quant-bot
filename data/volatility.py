@@ -1,9 +1,9 @@
-from modules.config import SYMBOL_CONFIGS
-from modules.logger import log
+from config.config import SYMBOL_CONFIGS
+from config.logger import log
 
 def adjust_strategy_based_on_volatility(symbol, price):
-    from modules.config import SYMBOL_CONFIGS
-    from modules.logger import log
+    from config.config import SYMBOL_CONFIGS
+    from config.logger import log
 
     volatility = get_market_volatility(symbol)
 

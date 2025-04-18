@@ -1,8 +1,8 @@
 # 引入基础策略类 BaseStrategy，用于继承实现具体策略逻辑
-from modules.strategies.base_strategy import BaseStrategy
+from strategies.base_strategy import BaseStrategy
 
 # 引入符号（币种/股票等）对应的策略配置参数，如买入价、止盈比例、止损比例
-from modules.config import SYMBOL_CONFIGS
+from config.config import SYMBOL_CONFIGS
 
 
 class SimpleThresholdStrategy(BaseStrategy):
@@ -15,7 +15,7 @@ class SimpleThresholdStrategy(BaseStrategy):
     - 止损条件：当前价格低于买入价乘以止损比率（stop_loss_ratio，默认 0.99，即亏损超过 1%）。
     """
 
-    def should_buy(self, symbol: str, price: float, position: dict) -> bool:
+    def should_buy(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
         """
         判断是否应该买入。
 
@@ -31,7 +31,7 @@ class SimpleThresholdStrategy(BaseStrategy):
         # 如果当前没有持仓，且价格低于预设买入价，则返回 True
         return not position.get("holding", False) and price < config["buy_price"]
 
-    def should_sell(self, symbol: str, price: float, position: dict) -> bool:
+    def should_sell(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
         """
         判断是否应该卖出（止盈）。
 
@@ -55,7 +55,7 @@ class SimpleThresholdStrategy(BaseStrategy):
         # 若盈利比例超过设定阈值（默认 3%），则返回 True
         return profit_pct > config.get("take_profit_pct", 0.03)
 
-    def should_stop_loss(self, symbol: str, price: float, position: dict) -> bool:
+    def should_stop_loss(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
         """
         判断是否应该止损。
 

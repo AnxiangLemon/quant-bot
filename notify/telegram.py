@@ -1,6 +1,6 @@
 import asyncio
 from telegram import Bot
-from modules.config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
+from config.config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
 
 bot = Bot(token=TELEGRAM_TOKEN)
 
