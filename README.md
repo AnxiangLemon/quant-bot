@@ -1,6 +1,6 @@
-# 🧠 quantbot - 模拟网格量化交易机器人
+# 🧠 Quant-Bot - 模拟网格量化交易机器人
 
-quantbot 是一个基于 Python 和 Binance API 的开源模拟网格量化交易机器人。
+quant-bot 是一个基于 Python 和 Binance API 的开源模拟网格量化交易机器人。
 支持多币种监控、动态策略调整、止盈止损机制、Telegram 通知、持久化持仓状态，是入门量化交易和策略验证的极佳项目。
 
 ---
@@ -22,8 +22,8 @@ quantbot 是一个基于 Python 和 Binance API 的开源模拟网格量化交�
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/AnxiangLemon/quantbot.git
-cd quantbot
+git clone https://github.com/AnxiangLemon/quant-bot.git
+cd quant-bot
 ```
 
 ### 2. 安装依赖
@@ -43,7 +43,7 @@ pip install -r requirements.txt
 ### 4. 启动机器人
 
 ```bash
-python grid_bot.py
+python bot.py
 ```
 
 ---
@@ -69,7 +69,7 @@ class BaseStrategy:
 
 ```
 quant-grid/
-├── grid_bot.py                    # 主程序
+├── bot.py                    # 主程序
 ├── modules/
 │   ├── config.py                  # 全部币种+策略参数配置
 │   ├── logger.py                  # 日志打印与持久化
@@ -92,5 +92,5 @@ MIT License - 欢迎 fork/使用/二次开发，转载请注明来源。
 
 ## 💬 联系与反馈
 
-欢迎通过 [issues](https://github.com/AnxiangLemon/quantbot/issues) 提问或提交建议。
+欢迎通过 [issues](https://github.com/AnxiangLemon/quant-bot/issues) 提问或提交建议。
 如果你觉得项目有帮助，可以点个 ⭐ 支持一下！

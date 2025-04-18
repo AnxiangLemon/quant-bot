@@ -1,0 +1,4 @@
+ccxt==4.1.98                  # Binance 接口
+python-telegram-bot==20.7     # Telegram 通知支持
+numpy==1.26.4                 # 用于波动率计算
+
