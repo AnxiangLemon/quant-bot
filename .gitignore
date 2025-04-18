@@ -1,0 +1,12 @@
+# 忽略所有 pycache 编译文件
+__pycache__/
+*.py[cod]
+
+# 忽略配置文件
+position.json
+trade_log.txt
+config_local.py
+
+
+# 忽略 VSCode 设置（可选）
+.vscode/
