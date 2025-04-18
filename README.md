@@ -68,7 +68,7 @@ class BaseStrategy:
 ## 📁 项目结构
 
 ```
-quant-grid/
+quant-bot/
 ├── bot.py                    # 主程序
 ├── modules/
 │   ├── config.py                  # 全部币种+策略参数配置
