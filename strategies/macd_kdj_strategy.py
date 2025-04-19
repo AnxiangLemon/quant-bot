@@ -37,7 +37,7 @@ class MACDKDJStrategy(BaseStrategy):
 
         # 判断条件：MACD 金叉 或 KDJ 金叉 且 J 值未过热
         return (
-            ((dif_y < dea_y and dif > dea) or (k_y < d_y and k > d)) and j < max_j
+            ((dif_y < dea_y and dif > dea) or (k_y < d_y and k > d)) #and j < max_j
         )
 
     def should_sell(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
@@ -84,7 +84,7 @@ class MACDKDJStrategy(BaseStrategy):
                 fix_stop_pct = config.get("fixed_stop_loss_pct", 0.02)
                 if price < entry_price * (1 - fix_stop_pct):
                     log("🔻 触发固定百分比止损")
-                    kwargs["stop_reason"] = "fixed"
+                    indicators["stop_reason"] = "fixed"
                     return True
 
             elif method == "atr":
@@ -94,7 +94,7 @@ class MACDKDJStrategy(BaseStrategy):
                     stop_price = entry_price - atr_multiplier * latest_atr
                     if price < stop_price:
                         log("🔻 触发 ATR 动态止损")
-                        kwargs["stop_reason"] = "atr"
+                        indicators["stop_reason"] = "atr"
                         return True
 
             elif method == "macd":
@@ -103,7 +103,7 @@ class MACDKDJStrategy(BaseStrategy):
                     dif, dea = indicators["DIF"][-1], indicators["DEA"][-1]
                     if dif_y > dea_y and dif < dea and price < entry_price:
                         log("🔻 触发 MACD 死叉趋势止损")
-                        kwargs["stop_reason"] = "macd"
+                        indicators["stop_reason"] = "macd"
                         return True
 
             elif method == "drawdown":
@@ -112,14 +112,14 @@ class MACDKDJStrategy(BaseStrategy):
                 max_drawdown_pct = config.get("max_drawdown_pct", 0.05)
                 if drawdown_pct >= max_drawdown_pct:
                     log(f"🔻 触发最大回撤止损：回撤 {drawdown_pct:.2%}")
-                    kwargs["stop_reason"] = "drawdown"
+                    indicators["stop_reason"] = "drawdown"
                     return True
 
             elif method == "trailing":
                 trailing_stop_price = position.get("trailing_stop_price")
                 if trailing_stop_price and price < trailing_stop_price:
                     log(f"🔻 触发移动止损：当前价格 {price:.2f} < 止损线 {trailing_stop_price:.2f}")
-                    kwargs["stop_reason"] = "trailing"
+                    indicators["stop_reason"] = "trailing"
                     return True
 
         return False
