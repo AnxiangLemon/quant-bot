@@ -59,6 +59,7 @@ def get_strategy_indicators(symbol: str = "BTC/USDT", timeframe: str = "1m", lim
 
     if True:
         print(f"\n[DEBUG] {symbol} - {timeframe}")
+        print(f"🔍 dif_y: {indicators['DIF'][-2]:.6f}, dea_y: {indicators['DEA'][-2]:.6f}")
         print(f"🔍 DIF[-1]: {indicators['DIF'][-1]:.6f}, DEA[-1]: {indicators['DEA'][-1]:.6f}")
         print(f"🔍 K[-1]: {indicators['K'][-1]:.2f}, D[-1]: {indicators['D'][-1]:.2f}, J[-1]: {indicators['J'][-1]:.2f}")
         print(f"🕒 最新时间戳: {df['timestamp'].iloc[-1]}")

@@ -34,12 +34,18 @@ class MACDKDJStrategy(BaseStrategy):
         k_y, d_y = indicators["K"][-2], indicators["D"][-2]
         k, d = indicators["K"][-1], indicators["D"][-1]
         j = indicators["J"][-1]
-
+        print('JJJJJ',j)
         return (
-            dif_y < dea_y and dif > dea and
-            k_y < d_y and k > d and
-            j < 50
+            # dif_y < dea_y and dif > dea and
+            # k_y < d_y and k > d and
+            # j < 50
+          # 买入：两个金叉满足任意一个，且 J < 70（避免买在过热）
+            ((dif_y < dea_y and dif > dea) or (k_y < d_y and k > d)) and j < 70
+
+
         )
+        
+        
 
     def should_sell(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
         if not position.get("holding", False):
