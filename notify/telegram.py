@@ -1,6 +1,8 @@
 import asyncio
 from telegram import Bot
 from config.config import TELEGRAM_TOKEN, TELEGRAM_CHAT_ID
+from config.logger import log
+
 
 bot = Bot(token=TELEGRAM_TOKEN)
 
@@ -8,7 +10,7 @@ async def send_telegram_message_async(message: str):
     try:
         await bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     except Exception as e:
-        print(f"[Telegram] ❌ 异步发送失败：{e}")
+        log(f"[Telegram] ❌ 异步发送失败：{e}")
 
 # 保持一个全局复用的 event loop
 def send_telegram_message(message: str):
@@ -24,7 +26,7 @@ def send_telegram_message(message: str):
             asyncio.set_event_loop(loop)
 
         loop.run_until_complete(send_telegram_message_async(message))
-        print(f"[Telegram] ✅ 已异步发送消息：{message}")
+        log(f"[Telegram] ✅ 已异步发送消息：{message}")
 
     except Exception as e:
-        print(f"[Telegram] ❌ 异步运行错误：{e}")
+        log(f"[Telegram] ❌ 异步运行错误：{e}")
