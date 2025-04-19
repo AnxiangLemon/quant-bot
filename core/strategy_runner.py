@@ -33,7 +33,15 @@ def run_loop():
                # adjust_strategy_based_on_volatility(symbol, price)
 
                 # 根据MACD KDJ 来推断
-                indicators = get_strategy_indicators(symbol)
+               #  indicators = get_strategy_indicators(symbol)
+                indicators = get_strategy_indicators(
+                symbol=symbol,
+                timeframe="1m",
+                limit=200,
+                macd_params=config.get("macd_params", (12, 26, 9)),
+                kdj_params=config.get("kdj_params", (9, 3)),
+                atr_window=config.get("atr_window", 14)
+)
                 if strategy.should_buy(symbol, price, holding_info, indicators=indicators):
                     handle_buy(symbol, price, position)
 
