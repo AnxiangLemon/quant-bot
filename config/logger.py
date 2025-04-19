@@ -1,6 +1,6 @@
 from datetime import datetime
 
-LOG_FILE = "trade_log.txt"  # 设置日志文件路径
+LOG_FILE = "logs/trade_log.txt"  # 设置日志文件路径
 
 def log_to_file(msg):
     """将日志写入文件"""

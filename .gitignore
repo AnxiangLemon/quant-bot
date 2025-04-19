@@ -5,8 +5,10 @@ __pycache__/
 # 忽略配置文件
 position.json
 trade_log.txt
+trade_history.csv
 config_local.py
 
+学习记录
 
 # 忽略 VSCode 设置（可选）
 .vscode/
