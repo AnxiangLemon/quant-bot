@@ -1,7 +1,7 @@
 # 📁 strategies/macd_kdj_strategy.py
 
 from strategies.base_strategy import BaseStrategy
-from config.config import SYMBOL_CONFIGS
+from config.config import SYMBOL_CONFIGS, TRADE_FEE_RATE
 from config.logger import log
 
 
@@ -41,27 +41,79 @@ class MACDKDJStrategy(BaseStrategy):
         )
 
     def should_sell(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
+        """
+        判断是否应该主动卖出（非止损行为）。
+        该方法综合技术面卖出信号 + 最小利润过滤，确保：
+        - 满足 MACD 死叉 或 J 值过热 等技术指标条件；
+        - 同时当前净利润达到配置的最小利润阈值（如 min_profit = 0.5 USDT）；
+        - 否则不会卖出（等待更好机会）。
+        
+        参数：
+            symbol (str): 交易对，如 "BTC/USDT"
+            price (float): 当前市场价格
+            position (dict): 当前币种持仓信息
+            kwargs:
+                indicators (dict): 指标数据，如 MACD、KDJ、ATR 等
+
+        返回：
+            bool: 是否满足主动卖出条件（True 表示应当卖出）
+        """
+
+        # 1️⃣ 如果当前没有持仓状态（未买入），则不考虑卖出
         if not position.get("holding", False):
             return False
 
+        # 2️⃣ 获取传入的指标数据（由外部传入，如 MACD、KDJ 等）
         indicators = kwargs.get("indicators", {})
-        config = SYMBOL_CONFIGS[symbol]
-        min_j = config.get("min_j_sell", 90)
+        config = SYMBOL_CONFIGS[symbol]  # 获取当前币种的策略配置
+        min_j = config.get("min_j_sell", 90)  # 卖出时 J 值过热的阈值（技术面）
 
+        # 3️⃣ 检查指标数据是否齐全，避免出现 index 或 key 错误
         if not self._check_indicators(indicators):
             return False
 
-        # 获取 MACD 当前与前一周期 DIF 和 DEA 值
-        dif_y, dea_y = indicators["DIF"][-2], indicators["DEA"][-2]
-        dif, dea = indicators["DIF"][-1], indicators["DEA"][-1]
+        # 4️⃣ 取出 MACD 的前一周期 和 当前周期数据，用于判断死叉
+        dif_y, dea_y = indicators["DIF"][-2], indicators["DEA"][-2]  # 上一根K线的 DIF/DEA
+        dif, dea = indicators["DIF"][-1], indicators["DEA"][-1]      # 当前K线的 DIF/DEA
 
-        # 当前周期 J 值
+        # 5️⃣ 取出当前周期的 KDJ 的 J 值
         j = indicators["J"][-1]
 
-        # 判断条件：MACD 死叉 或 J 值过热
-        return (
-            (dif_y > dea_y and dif < dea) or j > min_j
-        )
+        # 6️⃣ 技术面判断：如果出现 MACD 死叉 或 J > min_j（过热），触发卖出信号
+        technical_signal = (dif_y > dea_y and dif < dea) or (j > min_j)
+
+        # 7️⃣ 如果技术面不满足，则不考虑利润，直接返回 False
+        if not technical_signal:
+            return False
+
+        # 8️⃣ 技术面满足后，判断当前是否达到设定的最小盈利门槛（避免小赚就卖）
+        entry_price = position.get("entry_price")               # 原始买入价格
+        amount = position.get("amount", 0.01)                   # 持仓数量（默认 0.01）
+        buy_fee = position.get("buy_fee", 0.0)                  # 原始买入手续费
+        fee_rate = config.get("fee_rate", TRADE_FEE_RATE)       # 当前手续费率
+       # min_profit = config.get("min_profit", 0.5)              # 最小净利润限制（如 0.5 USDT）
+
+        # 获取配置中的最小利润百分比（例如：1%）
+        min_profit_pct = config.get("min_profit_pct", 1.0)  # 默认 1%
+         # 计算最小利润金额
+        min_profit_value = entry_price * amount * (min_profit_pct / 100)
+        
+         # 9️⃣ 计算当前卖出价格下的毛收入（price * 数量）
+        sell_total = price * amount
+
+        # 🔟 卖出手续费 = 总卖出金额 * 费率
+        sell_fee = sell_total * fee_rate
+
+        # 🔁 计算净利润 = 卖出收入 - 买入成本 - 手续费
+        net_profit = sell_total - (entry_price * amount) - buy_fee - sell_fee
+
+        #  如果净利润未达到设定的最小利润，则拒绝卖出
+        if net_profit < min_profit_value:
+            log(f"⏸️ 盈利未达最小门槛 {net_profit:.6f} < {min_profit_value:.6f}，暂不卖出")
+            return False
+
+        # ✅ 技术面满足、利润也达标，允许卖出
+        return True
 
     def should_stop_loss(self, symbol: str, price: float, position: dict, **kwargs) -> bool:
         """

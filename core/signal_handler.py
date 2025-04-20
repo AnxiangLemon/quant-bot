@@ -96,7 +96,7 @@ def finalize_trade(symbol, price, holding_info, position, action="SELL", reason=
     fee_rate = SYMBOL_CONFIGS[symbol].get("fee_rate", TRADE_FEE_RATE)
 
     # 最小可接受的净利润门槛（比如 0.5 USDT），只有非止损才判断
-    MIN_PROFIT_USDT = SYMBOL_CONFIGS[symbol].get("min_profit", 0.5)
+   # MIN_PROFIT_USDT = SYMBOL_CONFIGS[symbol].get("min_profit", 0.5)
 
     # 计算本次卖出收入（未扣手续费）
     sell_total = price * amount
@@ -110,15 +110,15 @@ def finalize_trade(symbol, price, holding_info, position, action="SELL", reason=
     # 计算盈亏百分比（以买入成本为基准）
     pct = (net_profit / (entry_price * amount)) * 100 if entry_price else 0
 
-    # 如果不是止损操作（ignore_min_profit=False），且利润低于设定阈值，则跳过卖出
-    if not ignore_min_profit and net_profit < MIN_PROFIT_USDT:
-        log(f"⚠️ 净利润 {net_profit:.6f} 小于最小门槛 {MIN_PROFIT_USDT}，不执行卖出")
-        send_telegram_message(
-            f"⚠️ {symbol} 净利润过低：{net_profit:.6f} USDT（{pct:.2f}%）\n"
-            f"买入价: {entry_price:.6f}，卖出价: {price:.6f}\n"
-            f"手续费共: {buy_fee + sell_fee:.6f} → 利润被吃掉了"
-        )
-        return  # 中止交易
+    # # 如果不是止损操作（ignore_min_profit=False），且利润低于设定阈值，则跳过卖出
+    # if not ignore_min_profit and net_profit < MIN_PROFIT_USDT:
+    #     log(f"⚠️ 净利润 {net_profit:.6f} 小于最小门槛 {MIN_PROFIT_USDT}，不执行卖出")
+    #     send_telegram_message(
+    #         f"⚠️ {symbol} 净利润过低：{net_profit:.6f} USDT（{pct:.2f}%）\n"
+    #         f"买入价: {entry_price:.6f}，卖出价: {price:.6f}\n"
+    #         f"手续费共: {buy_fee + sell_fee:.6f} → 利润被吃掉了"
+    #     )
+    #     return  # 中止交易
 
     # 表情和文案根据类型（正常卖出 or 止损）切换
     emoji = "🔴" if action == "SELL" else "🔻"
