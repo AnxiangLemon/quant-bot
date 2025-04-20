@@ -6,10 +6,10 @@ __pycache__/
 position.json
 trade_log.txt
 *.csv
-config_local.py
 .env
 
 学习记录
+temp
 
 # 忽略 VSCode 设置（可选）
 .vscode/

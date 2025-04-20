@@ -31,7 +31,7 @@ SYMBOL_CONFIGS = {
 
         #  技术指标参数
         "macd_params": (12, 26, 9),    # MACD 参数（快速EMA周期, 慢速EMA周期, 信号线周期）
-        "kdj_params": (9, 3),          # KDJ 参数（周期, 平滑因子）
+        "kdj_params":(9, 3, 3),        # KDJ 参数（周期, 平滑因子）
         "atr_window": 14,              # ATR（平均真实波动范围）计算窗口
 
         #  技术策略判断条件
@@ -60,7 +60,7 @@ SYMBOL_CONFIGS = {
         "stop_loss_ratio": 0.985,       # 兜底止损线：入场价 * 0.985
 
         "macd_params": (12, 26, 9),
-        "kdj_params": (9, 3),
+        "kdj_params":(9, 3, 3),
         "atr_window": 14,
 
         "max_j_buy": 65,                # 略微保守，只在 J < 65 时买入
@@ -87,7 +87,7 @@ SYMBOL_CONFIGS = {
         "stop_loss_ratio": 0.98,        # 亏损 2% 止损
 
         "macd_params": (12, 26, 9),
-        "kdj_params": (9, 3),
+        "kdj_params": (9, 3, 3),
         "atr_window": 14,
 
         "max_j_buy": 60,                # J < 60 才可买入（防止过热买入）
